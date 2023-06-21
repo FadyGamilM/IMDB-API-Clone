@@ -10,7 +10,7 @@ from django.urls import path
 #######################################################################################################
 
 ################################# Function based views ##############################################
-from .class_based_view.views import MovieCreateView, MovieDeleteView, MovieDetailsView, MoviesListView, MovieUpdateView
+from .class_based_view.views import MovieCreateView, MovieDetailsView, MoviesListView
 
 resource_details_id = '<int:pk>/'
 
