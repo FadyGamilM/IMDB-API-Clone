@@ -20,6 +20,7 @@ from rest_framework.decorators import api_view
 ####################################################
 
 
+##################################### After Serializer ###################################################
 @api_view(http_method_names=["GET"])
 def list_movies(request: Request):
     # all movies as a query set
@@ -32,6 +33,7 @@ def list_movies(request: Request):
 
 @api_view(http_method_names=["POST"])
 def create_movie(request: Request):
+    '''POST REQUEST | create new instance'''
     # get the data from the request of the user 
     serializer = MovieSerializer(data = request.data)
     print(f"serializer from POST request after serializing the user equest => \t \t \n {serializer}")
@@ -42,11 +44,31 @@ def create_movie(request: Request):
     else:
         return Response(serializer.errors)    
 
-@api_view(http_method_names=["GET"])
+
+@api_view(http_method_names=["GET", "PUT", "DELETE"])
 def movie_details(request : Request, pk: int):
-    # get specific movie
-    found_movie = Movie.objects.get(pk=pk)
-    # serialize it
-    serializer = MovieSerializer(found_movie)
-    # return the response
-    return Response(serializer.data)
+    '''GET REQUEST | get by id'''
+    if request.method == "GET":
+        # get specific movie
+        found_movie = Movie.objects.get(pk=pk)
+        # serialize it
+        serializer = MovieSerializer(found_movie)
+        # return the response
+        return Response(serializer.data)
+
+    '''PUT REQUEST | update by id'''    
+    if request.method == "PUT":
+        old_movie = Movie.objects.get(pk=pk)
+        serializer = MovieSerializer(instance= old_movie, data= request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)
+        
+    '''DELETE REQUEST | delete by id'''
+    if request.method == "DELETE":
+        found_movie = Movie.objects.get(pk = pk)
+        found_movie.delete()
+        return Response(data="deleted")
+##############################################################################################################

@@ -14,3 +14,10 @@ class MovieSerializer(serializers.Serializer):
             once we get this validated data, we will create an instance in the database
         """
         return Movie.objects.create(**validated_data)
+    
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.description = validated_data.get('description', instance.description)
+        instance.is_published = validated_data.get('is_published', instance.is_published)
+        instance.save()
+        return instance
