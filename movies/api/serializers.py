@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from ..models import Movie
 
 
 class MovieSerializer(serializers.Serializer):
@@ -6,3 +7,10 @@ class MovieSerializer(serializers.Serializer):
     name = serializers.CharField()
     description = serializers.CharField()
     is_published = serializers.BooleanField()
+
+    def create(self, validated_data):
+        """
+            validated_data -> are the dictionary which contains all the elements of the Movie class
+            once we get this validated data, we will create an instance in the database
+        """
+        return Movie.objects.create(**validated_data)
