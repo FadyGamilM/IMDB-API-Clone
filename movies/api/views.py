@@ -4,7 +4,7 @@ from .serializers import MovieSerializer
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-
+from rest_framework.status import HTTP_204_NO_CONTENT, HTTP_201_CREATED, HTTP_200_OK, HTTP_202_ACCEPTED
 ############ Before serializer ###################
 # def list_movies(req):
 #     # define a query set
@@ -40,7 +40,7 @@ def create_movie(request: Request):
     if serializer.is_valid():
         serializer.save()
         # return the persisted and serialized data that we returned from the serializer.create method 
-        return Response(serializer.data)
+        return Response(serializer.data, status=HTTP_201_CREATED)
     else:
         return Response(serializer.errors)    
 
@@ -54,7 +54,7 @@ def movie_details(request : Request, pk: int):
         # serialize it
         serializer = MovieSerializer(found_movie)
         # return the response
-        return Response(serializer.data)
+        return Response(serializer.data, status=HTTP_200_OK)
 
     '''PUT REQUEST | update by id'''    
     if request.method == "PUT":
@@ -64,11 +64,11 @@ def movie_details(request : Request, pk: int):
             serializer.save()
             return Response(serializer.data)
         else:
-            return Response(serializer.errors)
+            return Response(serializer.errors, status=HTTP_202_ACCEPTED)
         
     '''DELETE REQUEST | delete by id'''
     if request.method == "DELETE":
         found_movie = Movie.objects.get(pk = pk)
         found_movie.delete()
-        return Response(data="deleted")
+        return Response(data="deleted", status=HTTP_204_NO_CONTENT)
 ##############################################################################################################
