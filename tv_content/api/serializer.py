@@ -7,6 +7,7 @@ class ContentSerializer (ModelSerializer):
         fields = '__all__'
 
 class StreamingPlatformSerializer(ModelSerializer):
+
     class Meta:
         model = StreamingPlatform
         fields = '__all__'

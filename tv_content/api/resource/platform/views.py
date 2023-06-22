@@ -38,8 +38,8 @@ class StreamingPlatformDetailsActionsApiView(APIView):
             resource = StreamingPlatform.objects.get(pk = pk)
         except resource.DoesNotExist:
             return Response({'error': 'no resource found with given priamry key'}, status=status.HTTP_404_NOT_FOUND)
-        serialized_data = StreamingPlatformSerializer(resource)
-        return Response(serialized_data, status=status.HTTP_200_OK)
+        serializer = StreamingPlatformSerializer(resource)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
     def put(self, request:Request, pk:int):
         # 1. try to found the resource with given pk 
