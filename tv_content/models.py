@@ -1,7 +1,6 @@
 from django.db import models
 
-# Create your models here.
-
+from django.db import models
 
 class Content(models.Model):
     name = models.CharField(max_length=200)
@@ -16,15 +15,6 @@ class StreamingPlatform(models.Model):
     name = models.CharField(max_length=200)
     about = models.TextField()
     website = models.URLField()
-
-    def __str__(self) -> str:
-        return self.name
-
-
-class Movie(models.Model):
-    name = models.CharField(max_length=200)
-    is_published = models.BooleanField(default=True)
-    description = models.CharField(max_length=500)
 
     def __str__(self) -> str:
         return self.name

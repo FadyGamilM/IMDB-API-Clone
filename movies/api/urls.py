@@ -18,7 +18,5 @@ urlpatterns = [
     path('list/', MoviesListView.as_view(), name='movie-list'),
     path('new/', MovieCreateView.as_view(), name='movie-create'),
     path(resource_details_id, MovieDetailsView.as_view(), name='movie-details')
-    # path(resource_details_id, MovieUpdateView.as_view(), name='movie-update'),
-    # path(resource_details_id, MovieDeleteView.as_view(), name='movie-delete'),
 ]
 #######################################################################################################
