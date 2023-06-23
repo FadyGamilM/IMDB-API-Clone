@@ -9,4 +9,4 @@ class ContentSerializer (ModelSerializer):
 
     class Meta:
         model = Content
-        fields = '__all__'
+        exclude = ('streaming_platform',)

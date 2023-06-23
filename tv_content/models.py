@@ -4,6 +4,8 @@ from django.db import models
 
 from django.core.validators import MinValueValidator, MaxValueValidator
 
+from django.contrib.auth.models import User
+
 
 class StreamingPlatform(models.Model):
     name = models.CharField(max_length=200)
@@ -32,6 +34,8 @@ class Content(models.Model):
 
 
 class Review(models.Model):
+    # who wrote this review
+    reviewer = models.ForeignKey(to=User, on_delete=models.CASCADE)
     rating = models.PositiveIntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(5)])
     # user can rate the content without typing a text review

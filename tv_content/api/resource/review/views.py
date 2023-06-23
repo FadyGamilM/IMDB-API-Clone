@@ -12,10 +12,12 @@ class ReviewListApiView(generics.ListAPIView):
 
 
 class ReviewCreateApiView(generics.CreateAPIView):
+    '''create a new review'''
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
 
 
 class ReviewDetailsApiVeiw(generics.RetrieveUpdateDestroyAPIView):
+    '''get | update | delete a specific review'''
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
