@@ -7,7 +7,7 @@ from ....models import Content
 from ..review.serializer import ReviewSerializer
 from rest_framework import generics
 from ....models import Review
-
+from rest_framework.exceptions import ValidationError
 #######################################################################################################
 # class ContentListApiView(APIView):
 #     def get(self, request: Request):
@@ -42,10 +42,10 @@ class ContentListApiView(generics.ListAPIView):
 
 
 # => Refacotr to generic view
-# class ContentCreateApiView(generics.CreateAPIView):
-#     '''create new content'''
-#     queryset = Content.objects.all()
-#     serializer_class = ContentSerializer
+class ContentCreateApiView(generics.CreateAPIView):
+    '''create new content'''
+    queryset = Content.objects.all()
+    serializer_class = ContentSerializer
 # ######################################################################################################
 
 
@@ -119,11 +119,26 @@ class ContentReviewDetailsApiView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class ContentReviewCreateApiView(generics.CreateAPIView):
+    # specify the serializer that the view will work with
     serializer_class = ReviewSerializer
+    # specify which model the view will operate on
+    queryset = Review.objects.all()
 
     def perform_create(self, reviewSerializer):
+        '''
+            we specified the serializer class above, so when we pass a serialzier to 
+            the method, we mean the serialzier of the review resource not the content resource
+        '''
         # 1. get the content via content passed id
         content_pk = self.kwargs['content_pk']
         content = Content.objects.get(pk=content_pk)
-        # 2. save the new review
-        reviewSerializer.save(content=content)
+
+        # 2. check that the reviewer didn't review on this content before
+        review_owner = self.request.user
+        review_of_this_content_by_this_user = Review.objects.filter(
+            content=content, reviewer=review_owner)
+        if review_of_this_content_by_this_user.exists():
+            raise ValidationError("this user reviewed on this content before")
+
+        # 2. save the new review by specifying the content and the owner
+        reviewSerializer.save(content=content, reviewer=review_owner)
