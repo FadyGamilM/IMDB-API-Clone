@@ -49,4 +49,4 @@ class Review(models.Model):
 
     def __str__(self):
         # return rating not desc because desc might be null at some reviews
-        return self.rating
+        return str(self.rating)
