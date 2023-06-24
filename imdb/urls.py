@@ -21,5 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('contents/', include('tv_content.api.resource.content.urls')),
     path('platforms/', include('tv_content.api.resource.platform.urls')),
-    path('reviews/', include('tv_content.api.resource.review.urls'))
+    path('reviews/', include('tv_content.api.resource.review.urls')),
+    path('api-auth/', include('rest_framework.urls'))
 ]
