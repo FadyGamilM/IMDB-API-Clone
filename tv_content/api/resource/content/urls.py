@@ -13,7 +13,7 @@ urlpatterns = [
     # create a new content
     path('new/', ContentCreateApiView.as_view(), name='content_create_action'),
     # get all reviews of specific content
-    path(resource_details_uri+'reviews', ContentReviewListApiView.as_view(),
+    path(resource_details_uri+'reviews/', ContentReviewListApiView.as_view(),
          name='content_reviews_list_action'),
     # get specific review of specific content
     path('<int:content_pk>/reviews/<int:review_pk>',

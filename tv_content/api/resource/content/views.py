@@ -6,7 +6,7 @@ from rest_framework import status
 from ....models import Content
 from ..review.serializer import ReviewSerializer
 from rest_framework import generics
-from ....models import Review
+from ....models import Review, Content
 from rest_framework.exceptions import ValidationError
 #######################################################################################################
 # class ContentListApiView(APIView):
@@ -109,6 +109,7 @@ class ContentReviewListApiView(generics.ListAPIView):
 
 class ContentReviewDetailsApiView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ReviewSerializer
+    queryset = Review.objects.all()
 
     def get_object(self):
         # we first get the cotnent
@@ -124,21 +125,28 @@ class ContentReviewCreateApiView(generics.CreateAPIView):
     # specify which model the view will operate on
     queryset = Review.objects.all()
 
-    def perform_create(self, reviewSerializer):
+    # we specified the serializer class above, so when we pass a serialzier to 
+    # the method, we mean the serialzier of the review resource not the content resource
+    def perform_create(self, review_serializer):
         '''
-            we specified the serializer class above, so when we pass a serialzier to 
-            the method, we mean the serialzier of the review resource not the content resource
+            1. get the primary key of the content
+            2. get the user who created this request
+            3. get the review that is made by this user and for this content (if exists)
+            4. if this review exists raise a ValidationError
+            5. if this review doesn't exist, then call the reviewSerializer.save() to save this review as a new one
         '''
         # 1. get the content via content passed id
         content_pk = self.kwargs['content_pk']
         content = Content.objects.get(pk=content_pk)
 
         # 2. check that the reviewer didn't review on this content before
+        #  ➜  get the user who initiated this request
         review_owner = self.request.user
+        #  ➜  get 
         review_of_this_content_by_this_user = Review.objects.filter(
-            content=content, reviewer=review_owner)
+            content=content_pk, reviewer=review_owner)
         if review_of_this_content_by_this_user.exists():
             raise ValidationError("this user reviewed on this content before")
 
         # 2. save the new review by specifying the content and the owner
-        reviewSerializer.save(content=content, reviewer=review_owner)
+        review_serializer.save(content=content, reviewer=review_owner)

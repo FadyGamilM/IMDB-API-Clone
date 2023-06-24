@@ -22,5 +22,6 @@ urlpatterns = [
     path('contents/', include('tv_content.api.resource.content.urls')),
     path('platforms/', include('tv_content.api.resource.platform.urls')),
     path('reviews/', include('tv_content.api.resource.review.urls')),
+    # for the sake of temporary login and registeration 
     path('api-auth/', include('rest_framework.urls'))
 ]

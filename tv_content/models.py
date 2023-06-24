@@ -25,7 +25,7 @@ class Content(models.Model):
     streaming_platform = models.ForeignKey(
         StreamingPlatform,
         on_delete=models.CASCADE,
-        # the related_name is used when we work with the reverse side of the relation
+        # the related_name is used when we work with the reverse side of the relation in it's serializer (in streaming platform serializer)
         related_name='content'
     )
 
@@ -39,7 +39,7 @@ class Review(models.Model):
     rating = models.PositiveIntegerField(
         validators=[MinValueValidator(1), MaxValueValidator(5)])
     # user can rate the content without typing a text review
-    description = models.TextField(null=True)
+    description = models.TextField(blank=True)
     # get set on the creation time only
     created_at = models.DateTimeField(auto_now_add=True)
     # get updated each time we call the save method in this object
