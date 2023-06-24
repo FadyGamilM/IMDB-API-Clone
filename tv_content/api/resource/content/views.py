@@ -134,6 +134,7 @@ class ContentReviewCreateApiView(generics.CreateAPIView):
             3. get the review that is made by this user and for this content (if exists)
             4. if this review exists raise a ValidationError
             5. if this review doesn't exist, then call the reviewSerializer.save() to save this review as a new one
+            6. update the content metadata such as avg_rating and total_num_of_reviews
         '''
         # 1. get the content via content passed id
         content_pk = self.kwargs['content_pk']
@@ -142,11 +143,18 @@ class ContentReviewCreateApiView(generics.CreateAPIView):
         # 2. check that the reviewer didn't review on this content before
         #  ➜  get the user who initiated this request
         review_owner = self.request.user
-        #  ➜  get 
         review_of_this_content_by_this_user = Review.objects.filter(
             content=content_pk, reviewer=review_owner)
         if review_of_this_content_by_this_user.exists():
             raise ValidationError("this user reviewed on this content before")
+        
+        # update the content metadata
+        content.total_num_of_reviews += 1
+        print('total count -> ',content.total_num_of_reviews)
+        content.avg_rating = (content.avg_rating * (content.total_num_of_reviews - 1) + review_serializer.validated_data['rating']) / content.total_num_of_reviews
+        print('avg rating -> ', content.avg_rating)
+        print('new rating -> ', review_serializer.validated_data['rating'])
+        content.save()
 
         # 2. save the new review by specifying the content and the owner
         review_serializer.save(content=content, reviewer=review_owner)

@@ -28,6 +28,8 @@ class Content(models.Model):
         # the related_name is used when we work with the reverse side of the relation in it's serializer (in streaming platform serializer)
         related_name='content'
     )
+    total_num_of_reviews = models.IntegerField(default=0)
+    avg_rating = models.FloatField(default=0)
 
     def __str__(self) -> str:
         return self.name
